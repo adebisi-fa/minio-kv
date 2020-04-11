@@ -237,6 +237,7 @@ func main() {
 	ssl := false
 	secret := os.Getenv("MINIO_SECRET_KEY")
 	access := os.Getenv("MINIO_ACCESS_KEY")
+	token := os.Getenv("TOKEN")
 	host := os.Getenv("host")
 	port := "8080"
 	if val, ok := os.LookupEnv("port"); ok {
@@ -255,7 +256,15 @@ func main() {
 	r := mux.NewRouter()
 	if len(bearerToken.token) > 0 {
 		r.Use(bearerToken.authenticate)
+	} else if len(token) > 0 {
+			log.Printf("Token used is %s", token)
+			bearerToken.token = token
+			r.Use(bearerToken.authenticate)
+		}
+	} else {
+		log.Printf("No token specified!")
 	}
+
 
 	r.Handle("/put/{object:[a-zA-Z0-9.-_]+}", putHandler(minioClient))
 	r.Handle("/get/{object:[a-zA-Z0-9.-_]+}", getHandler(minioClient))
