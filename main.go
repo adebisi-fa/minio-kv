@@ -238,7 +238,7 @@ func main() {
 	secret := os.Getenv("MINIO_SECRET_KEY")
 	access := os.Getenv("MINIO_ACCESS_KEY")
 	token := os.Getenv("TOKEN")
-	host := os.Getenv("host")
+	host := os.Getenv("HOST")
 	port := "8080"
 	if val, ok := os.LookupEnv("port"); ok {
 		port = strings.TrimSpace(val)
