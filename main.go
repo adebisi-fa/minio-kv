@@ -233,7 +233,7 @@ func (t *bearerToken) authenticate(next http.Handler) http.Handler {
 }
 
 func main() {
-	ssl := false
+	ssl := true
 	secret := os.Getenv("MINIO_SECRET_KEY")
 	access := os.Getenv("MINIO_ACCESS_KEY")
 	token := os.Getenv("TOKEN")
