@@ -144,7 +144,6 @@ func getHandler(minioClient *minio.Client) http.HandlerFunc {
 		if readErr != nil {
 			w.WriteHeader(http.StatusNotFound)
 			log.Println("Can't read object " + object)
-			return
 		} else {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
@@ -255,16 +254,17 @@ func main() {
 
 	r := mux.NewRouter()
 	if len(bearerToken.token) > 0 {
+		log.Printf("Token used is %s", bearerToken.token)
 		r.Use(bearerToken.authenticate)
-	} else if len(token) > 0 {
+	} else {
+		if len(token) > 0 {
 			log.Printf("Token used is %s", token)
 			bearerToken.token = token
 			r.Use(bearerToken.authenticate)
+		} else {
+			log.Printf("No token specified!")
 		}
-	} else {
-		log.Printf("No token specified!")
 	}
-
 
 	r.Handle("/put/{object:[a-zA-Z0-9.-_]+}", putHandler(minioClient))
 	r.Handle("/get/{object:[a-zA-Z0-9.-_]+}", getHandler(minioClient))
