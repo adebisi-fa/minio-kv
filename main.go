@@ -30,7 +30,7 @@ func getBlobHandler(minioClient *minio.Client) http.HandlerFunc {
 		object := vars["object"]
 		getOpts := minio.GetObjectOptions{}
 
-		objectReceived, getErr := minioClient.GetObject("kv", object, getOpts)
+		objectReceived, getErr := minioClient.GetObject("kvs", object, getOpts)
 		if getErr != nil {
 			w.WriteHeader(http.StatusNotFound)
 			log.Println("Can't get object " + object)
@@ -57,7 +57,7 @@ func getBlobStreamHandler(minioClient *minio.Client) http.HandlerFunc {
 		object := vars["object"]
 		getOpts := minio.GetObjectOptions{}
 
-		objectReceived, getErr := minioClient.GetObject("kv", object, getOpts)
+		objectReceived, getErr := minioClient.GetObject("kvs", object, getOpts)
 		if getErr != nil {
 			w.WriteHeader(http.StatusNotFound)
 			log.Println("Can't get object " + object)
@@ -86,7 +86,7 @@ func putBlobHandler(minioClient *minio.Client) http.HandlerFunc {
 			ContentEncoding: "application/octet-stream",
 		}
 
-		n, putErr := minioClient.PutObject("kv", object, reader, int64(len(body)), putOpts)
+		n, putErr := minioClient.PutObject("kvs", object, reader, int64(len(body)), putOpts)
 
 		if putErr != nil {
 			log.Println("Can't put object " + object)
@@ -111,7 +111,7 @@ func putBlobStreamHandler(minioClient *minio.Client) http.HandlerFunc {
 			ContentEncoding: "application/octet-stream",
 		}
 
-		n, putErr := minioClient.PutObject("kv", object, r.Body, -1, putOpts)
+		n, putErr := minioClient.PutObject("kvs", object, r.Body, -1, putOpts)
 
 		if putErr != nil {
 			log.Println("Can't put object " + object)
@@ -133,7 +133,7 @@ func getHandler(minioClient *minio.Client) http.HandlerFunc {
 
 		getOpts := minio.GetObjectOptions{}
 
-		objectReceived, getErr := minioClient.GetObject("kv", object, getOpts)
+		objectReceived, getErr := minioClient.GetObject("kvs", object, getOpts)
 		if getErr != nil {
 			w.WriteHeader(http.StatusNotFound)
 			log.Println("Can't get object " + object)
@@ -166,7 +166,7 @@ func putHandler(minioClient *minio.Client) http.HandlerFunc {
 			ContentEncoding: "application/json",
 		}
 
-		n, putErr := minioClient.PutObject("kv", object, reader, int64(len(body)), putOpts)
+		n, putErr := minioClient.PutObject("kvs", object, reader, int64(len(body)), putOpts)
 
 		if putErr != nil {
 			log.Println("Can't put object " + object)
@@ -204,13 +204,13 @@ func connect(ssl bool, secret string, access string, host string) (*minio.Client
 		return nil, err
 	}
 
-	exists, err := minioClient.BucketExists("kv")
+	exists, err := minioClient.BucketExists("kvs")
 	if err == nil && exists == false {
-		err = minioClient.MakeBucket("kv", "us-east-1")
+		err = minioClient.MakeBucket("kvs", "us-east-1")
 		if err != nil {
 			fmt.Println(err)
 		} else {
-			fmt.Println("Successfully created bucket \"kv\".")
+			fmt.Println("Successfully created bucket \"kvs\".")
 		}
 	}
 
